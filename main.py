@@ -28,8 +28,14 @@ player_y = 500
 player_velocity_y = 0
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+<<<<<<< HEAD
 player = pygame.image.load(os.path.join("Assets", "player.png"))
 player = pygame.transform.scale(player, (100, 100))
+=======
+player_left = pygame.image.load(os.path.join("Assets", "player_left.png"))
+player_right = pygame.image.load(os.path.join("Assets", "player_right.png"))
+player = pygame.transform.scale(player_left, (100, 100))  # Adjusted the size for visibility
+>>>>>>> 328a59b96f5028ccbe29e74cc9f71aa65856e2d4
 bg = pygame.image.load(os.path.join("Assets", "bg.png"))
 bg = pygame.transform.scale(bg, (900, 700))
 moon = pygame.image.load(os.path.join("Assets", "moon.png"))
@@ -111,7 +117,10 @@ while run:
     pressed_keys = pygame.key.get_pressed()
     if pressed_keys[pygame.K_a]:
         player_x -= speed
+        player = pygame.transform.scale(player_left,(100,100))
+
     if pressed_keys[pygame.K_d]:
+        player = pygame.transform.scale(player_right,(100,100))
         player_x += speed
 
     pygame.display.update()
