@@ -35,11 +35,19 @@ SCREEN_HEIGHT = 700
 player_x = 400
 player_y = 500
 player_velocity_y = 0
-energy_level = 100
+energy_level = 119
+energy_x = 400
+energy_y = 50
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
+energy6 = pygame.image.load(os.path.join("Assets", "energy6.png"))
+energy5 = pygame.image.load(os.path.join("Assets", "energy5.png"))
+energy4 = pygame.image.load(os.path.join("Assets", "energy4.png"))
+energy3 = pygame.image.load(os.path.join("Assets", "energy3.png"))
+energy2 = pygame.image.load(os.path.join("Assets", "energy2.png"))
+energy1 = pygame.image.load(os.path.join("Assets", "energy1.png"))
 player_left = pygame.image.load(os.path.join("Assets", "player_left.png"))
 player_right = pygame.image.load(os.path.join("Assets", "player_right.png"))
+energy_sprite = pygame.transform.scale(energy6, (125,75))
 player = pygame.transform.scale(player_left, (100, 100))  # Initialize player as left-facing
 
 bg = pygame.image.load(os.path.join("Assets", "bg.png"))
@@ -52,6 +60,9 @@ font = pygame.font.Font(None, 36)
 
 def draw_player(x, y):
     screen.blit(player, (x, y))
+
+def draw_energy(x, y):
+    screen.blit(energy_sprite, (x, y))
 
 def draw_charges_and_tiles():
     charge1.draw(screen)
@@ -70,14 +81,12 @@ def draw_charges_and_tiles():
     tile7.draw(screen)
     tile8.draw(screen)
     tile9.draw(screen)
-    energy_sprite.draw(screen)
 
 
 clock = pygame.time.Clock()
 gravity = 1
 jump_velocity = -22
 run = True
-energy_sprite = Energy(400,50, "energy6.png") 
 charge1 = Charge(250, 400, "charge.png")
 charge2 = Charge(200, 400, "charge.png")
 charge3 = Charge(150, 400, "charge.png")
@@ -102,6 +111,7 @@ while run:
     screen.blit(moon, (0, 600))
     draw_player(player_x, player_y)
     draw_charges_and_tiles()
+    draw_energy(energy_x, energy_y)
 
     player_rect = player.get_rect(topleft=(player_x, player_y))  # Move this line here
 
@@ -116,6 +126,18 @@ while run:
         player_velocity_y += gravity
 
     speed = 5
+    if energy_level >= 100:
+        energy_sprite = pygame.transform.scale(energy6, (125,50))
+    elif energy_level >= 80:
+        energy_sprite = pygame.transform.scale(energy5, (125,50))
+    elif energy_level >= 60:
+        energy_sprite = pygame.transform.scale(energy4, (125,50))
+    elif energy_level >= 40:
+        energy_sprite = pygame.transform.scale(energy3, (125,50))
+    elif energy_level >= 20:
+        energy_sprite = pygame.transform.scale(energy2, (125,50))
+    elif energy_level < 20:
+        energy_sprite = pygame.transform.scale(energy1, (125,50))    
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -124,6 +146,9 @@ while run:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w and player_y >= 500:
                 player_velocity_y = jump_velocity
+            if event.key == pygame.K_SPACE and energy_level != 0:
+                energy_level -= 20
+
 
     pressed_keys = pygame.key.get_pressed()
     if pressed_keys[pygame.K_a]:
