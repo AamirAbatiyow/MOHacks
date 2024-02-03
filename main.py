@@ -21,12 +21,21 @@ class Tile:
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
 
+class Energy:
+    def __init__(self,x,y,image):
+        self.image = pygame.image.load(os.path.join("Assets", image))
+        self.image = pygame.transform.scale(self.image, (125,50))
+        self.rect = self.image.get_rect(topleft=(x, y))
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect.topleft)
+
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
 player_x = 400
 player_y = 500
 player_velocity_y = 0
-
+energy_level = 100
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 player_left = pygame.image.load(os.path.join("Assets", "player_left.png"))
@@ -61,12 +70,14 @@ def draw_charges_and_tiles():
     tile7.draw(screen)
     tile8.draw(screen)
     tile9.draw(screen)
+    energy_sprite.draw(screen)
+
 
 clock = pygame.time.Clock()
 gravity = 1
 jump_velocity = -22
 run = True
-
+energy_sprite = Energy(400,50, "energy6.png") 
 charge1 = Charge(250, 400, "charge.png")
 charge2 = Charge(200, 400, "charge.png")
 charge3 = Charge(150, 400, "charge.png")
@@ -83,6 +94,7 @@ tile6 = Tile(500, 600, "tile.png")
 tile7 = Tile(600, 600, "tile.png")
 tile8 = Tile(700, 600, "tile.png")
 tile9 = Tile(800, 600, "tile.png")
+
 
 while run:
     clock.tick(60)
@@ -123,7 +135,6 @@ while run:
         player = pygame.transform.scale(player_right, (100, 100))
 
     # Display clock at the top
-    
     time_passed = pygame.time.get_ticks() // 1000
     time_text = font.render(f"Time: {time_passed}", True, (255,255,255))
     screen.blit(time_text, (425, 15))
