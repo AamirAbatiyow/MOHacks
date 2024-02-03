@@ -35,7 +35,7 @@ SCREEN_HEIGHT = 700
 player_x = 400
 player_y = 500
 player_velocity_y = 0
-energy_level = 119
+energy_level = 101
 energy_x = 400
 energy_y = 50
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -93,7 +93,8 @@ charge3 = Charge(150, 400, "charge.png")
 charge4 = Charge(600, 400, "charge.png")
 charge5 = Charge(650, 400, "charge.png")
 charge6 = Charge(700, 400, "charge.png")
-
+LASER_SOUND = pygame.mixer.Sound(os.path.join("Assets", "laser.mp3"))
+CHARGE_SOUND = pygame.mixer.Sound(os.path.join("Assets", "energycharge.mp3"))
 tile1 = Tile(0, 600, "tile.png")
 tile2 = Tile(100, 600, "tile.png")
 tile3 = Tile(200, 600, "tile.png")
@@ -146,8 +147,9 @@ while run:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w and player_y >= 500:
                 player_velocity_y = jump_velocity
-            if event.key == pygame.K_SPACE and energy_level != 0:
+            if event.key == pygame.K_SPACE and energy_level > 0:
                 energy_level -= 20
+                LASER_SOUND.play()
 
 
     pressed_keys = pygame.key.get_pressed()
@@ -155,6 +157,11 @@ while run:
         player_x -= speed
         player = pygame.transform.scale(player_left, (100, 100))
 
+    if pressed_keys[pygame.K_s]:
+        if energy_level < 100:
+            energy_level += 20
+            CHARGE_SOUND.play()
+    
     if pressed_keys[pygame.K_d]:
         player_x += speed
         player = pygame.transform.scale(player_right, (100, 100))
