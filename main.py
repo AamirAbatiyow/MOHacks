@@ -19,8 +19,9 @@ class Tile:
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-player = pygame.image.load(os.path.join("Assets", "player.png"))
-player = pygame.transform.scale(player, (100, 100))  # Adjusted the size for visibility
+player_left = pygame.image.load(os.path.join("Assets", "player_left.png"))
+player_right = pygame.image.load(os.path.join("Assets", "player_right.png"))
+player = pygame.transform.scale(player_left, (100, 100))  # Adjusted the size for visibility
 bg = pygame.image.load(os.path.join("Assets", "bg.png"))
 bg = pygame.transform.scale(bg, (900, 700))
 player_x = 400
@@ -55,7 +56,10 @@ while run:
     pressed_keys = pygame.key.get_pressed()
     if pressed_keys[pygame.K_a]:
         player_x -= speed
+        player = pygame.transform.scale(player_left,(100,100))
+
     if pressed_keys[pygame.K_d]:
+        player = pygame.transform.scale(player_right,(100,100))
         player_x += speed
     if pressed_keys[pygame.K_w]:
         player_y -= speed
