@@ -1,8 +1,10 @@
+#to play the game you move left and right with 'a' and 'd', you jump with 'w', you shoot your laser gun with 'space', you have to stand on the charge blocks in the air to recharge your laser
+#imports libraries
 import pygame
 import os
-
+#initializes the pygame thing
 pygame.init()
-
+#declaring all our classes
 class Charge:
     def __init__(self, x, y, image):
         self.image = pygame.image.load(os.path.join("Assets", image))
@@ -42,7 +44,11 @@ class Beam:
             self.rect.x -= 10
         elif self.direction == 'right':
             self.rect.x += 10
-
+# decalring our variables
+speed = 5
+energy_increase_delay = 30
+current_energy_delay = 0
+beams = []
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 700
 player_x = 400
@@ -51,7 +57,8 @@ player_velocity_y = 0
 energy_level = 101
 energy_x = 400
 energy_y = 50
-playerFacesRight = True
+playerFacesRight = False
+#loads all our images
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 beam = pygame.image.load(os.path.join("Assets", "beam.png"))
 energy6 = pygame.image.load(os.path.join("Assets", "energy6.png"))
@@ -64,15 +71,16 @@ player_left = pygame.image.load(os.path.join("Assets", "player_left.png"))
 player_right = pygame.image.load(os.path.join("Assets", "player_right.png"))
 energy_sprite = pygame.transform.scale(energy6, (125,75))
 player = pygame.transform.scale(player_left, (100, 100))  # Initialize player as left-facing
-
 bg = pygame.image.load(os.path.join("Assets", "bg.png"))
 bg = pygame.transform.scale(bg, (900, 700))
 moon = pygame.image.load(os.path.join("Assets", "moon.png"))
 moon = pygame.transform.scale(moon, (900, 100))
+LASER_SOUND = pygame.mixer.Sound(os.path.join("Assets", "laser.mp3"))
+CHARGE_SOUND = pygame.mixer.Sound(os.path.join("Assets", "energycharge.mp3"))
 
-# Font setup
+# timer setup
 font = pygame.font.Font(None, 36)
-
+# draw functions
 def draw_player(x, y):
     screen.blit(player, (x, y))
 
@@ -105,14 +113,13 @@ clock = pygame.time.Clock()
 gravity = 1
 jump_velocity = -22
 run = True
+#creates instances of all our classes
 charge1 = Charge(250, 400, "charge.png")
 charge2 = Charge(200, 400, "charge.png")
 charge3 = Charge(150, 400, "charge.png")
 charge4 = Charge(600, 400, "charge.png")
 charge5 = Charge(650, 400, "charge.png")
 charge6 = Charge(700, 400, "charge.png")
-LASER_SOUND = pygame.mixer.Sound(os.path.join("Assets", "laser.mp3"))
-CHARGE_SOUND = pygame.mixer.Sound(os.path.join("Assets", "energycharge.mp3"))
 tile1 = Tile(0, 600, "tile.png")
 tile2 = Tile(100, 600, "tile.png")
 tile3 = Tile(200, 600, "tile.png")
@@ -122,10 +129,6 @@ tile6 = Tile(500, 600, "tile.png")
 tile7 = Tile(600, 600, "tile.png")
 tile8 = Tile(700, 600, "tile.png")
 tile9 = Tile(800, 600, "tile.png")
-
-energy_increase_delay = 30
-current_energy_delay = 0
-beams = []  # List to store beam positions
 
 while run:
     clock.tick(60)
@@ -152,7 +155,7 @@ while run:
             player_y = charge.rect.top - player_rect.height
             player_velocity_y = 0  # Stop falling
             
-            # Increase energy level with a delay
+            # Increase energy level
             current_energy_delay += 1
             if current_energy_delay >= energy_increase_delay and energy_level<119:
                 energy_level += 20
@@ -163,8 +166,7 @@ while run:
     if player_y < 500 or player_velocity_y < 0:
         player_y += player_velocity_y
         player_velocity_y += gravity
-
-    speed = 5
+    #constantly checks energy level and updates energy image
     if energy_level >= 100:
         energy_sprite = pygame.transform.scale(energy6, (125, 50))
     elif energy_level >= 80:
@@ -177,7 +179,7 @@ while run:
         energy_sprite = pygame.transform.scale(energy2, (125, 50))
     elif energy_level < 20:
         energy_sprite = pygame.transform.scale(energy1, (125, 50))
-
+    #button presses(you have to hit them once and you cant press down)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -187,20 +189,14 @@ while run:
                 player_velocity_y = jump_velocity
             if event.key == pygame.K_SPACE and energy_level > 0:
                 energy_level -= 20
-                LASER_SOUND.play()
-
                 direction = 'right' if playerFacesRight else 'left'
                 beams.append(Beam(player_x, player_y + 20, direction))
-
+                LASER_SOUND.play()
+    #button presses(you must hold them down)
     pressed_keys = pygame.key.get_pressed()
     if pressed_keys[pygame.K_a]:
         player_x -= speed
         player = pygame.transform.scale(player_left, (100, 100))
-
-    if pressed_keys[pygame.K_s]:
-        if energy_level < 100:
-            energy_level += 20
-            CHARGE_SOUND.play()
     
         playerFacesRight = False
 
