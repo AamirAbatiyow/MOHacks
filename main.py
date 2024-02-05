@@ -57,6 +57,8 @@ player_velocity_y = 0
 energy_level = 101
 energy_x = 400
 energy_y = 50
+alien_x = -50
+alien_y = 500
 playerFacesRight = False
 #loads all our images
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -67,6 +69,8 @@ energy4 = pygame.image.load(os.path.join("Assets", "energy4.png"))
 energy3 = pygame.image.load(os.path.join("Assets", "energy3.png"))
 energy2 = pygame.image.load(os.path.join("Assets", "energy2.png"))
 energy1 = pygame.image.load(os.path.join("Assets", "energy1.png"))
+alien = pygame.image.load(os.path.join("Assets", "alien.png"))
+alien = pygame.transform.scale(alien,(80,80))
 player_left = pygame.image.load(os.path.join("Assets", "player_left.png"))
 player_right = pygame.image.load(os.path.join("Assets", "player_right.png"))
 energy_sprite = pygame.transform.scale(energy6, (125,75))
@@ -89,6 +93,9 @@ def draw_energy(x, y):
 
 def draw_beam(x, y):
     screen.blit(beam, (x,y))
+
+def draw_alien(x,y):
+    screen.blit(alien, (x,y))
 
 def draw_charges_and_tiles():
     charge1.draw(screen)
@@ -137,7 +144,7 @@ while run:
     draw_player(player_x, player_y)
     draw_charges_and_tiles()
     draw_energy(energy_x, energy_y)
-
+    draw_alien(alien_x, alien_y)
     # Update and draw beams
     updated_beams = []
     for beam in beams:
@@ -162,7 +169,6 @@ while run:
                 current_energy_delay = 0
                 CHARGE_SOUND.play()
 
-
     if player_y < 500 or player_velocity_y < 0:
         player_y += player_velocity_y
         player_velocity_y += gravity
@@ -179,6 +185,12 @@ while run:
         energy_sprite = pygame.transform.scale(energy2, (125, 50))
     elif energy_level < 20:
         energy_sprite = pygame.transform.scale(energy1, (125, 50))
+
+    #alien follows the player's x position
+    if alien_x > player_x:
+        alien_x -= 3
+    else:
+        alien_x += 3
     #button presses(you have to hit them once and you cant press down)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
