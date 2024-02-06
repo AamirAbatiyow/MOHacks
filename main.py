@@ -59,6 +59,7 @@ energy_x = 400
 energy_y = 50
 alien_x = -50
 alien_y = 500
+
 playerFacesRight = False
 #loads all our images
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -81,7 +82,6 @@ moon = pygame.image.load(os.path.join("Assets", "moon.png"))
 moon = pygame.transform.scale(moon, (900, 100))
 LASER_SOUND = pygame.mixer.Sound(os.path.join("Assets", "laser.mp3"))
 CHARGE_SOUND = pygame.mixer.Sound(os.path.join("Assets", "energycharge.mp3"))
-
 # timer setup
 font = pygame.font.Font(None, 36)
 # draw functions
@@ -147,15 +147,20 @@ while run:
     draw_alien(alien_x, alien_y)
     # Update and draw beams
     updated_beams = []
+    beam_rects = []
     for beam in beams:
         beam.update()
         screen.blit(beam.image, beam.rect.topleft)
         updated_beams.append(beam)
-
+    for beam in updated_beams:
+        beam_rects.append(beam.rect(topleft=(beam.rect.x, beam.rect. y)))
+        for beam in beam_rects:
+            if beam.colliderect(alien.get_rect(topleft=(alien_x, alien_y))):
+                alien_x = -50
+                alien_y = 500
+                beams = []
     beams = updated_beams
-
     player_rect = player.get_rect(topleft=(player_x, player_y))
-
     # Check collisions with charge blocks
     for charge in [charge1, charge2, charge3, charge4, charge5, charge6]:
         if player_rect.colliderect(charge.rect) and player_rect.bottom <= charge.rect.top + 5:
@@ -168,7 +173,6 @@ while run:
                 energy_level += 20
                 current_energy_delay = 0
                 CHARGE_SOUND.play()
-
     if player_y < 500 or player_velocity_y < 0:
         player_y += player_velocity_y
         player_velocity_y += gravity
