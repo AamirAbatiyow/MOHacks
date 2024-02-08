@@ -82,6 +82,7 @@ moon = pygame.image.load(os.path.join("Assets", "moon.png"))
 moon = pygame.transform.scale(moon, (900, 100))
 LASER_SOUND = pygame.mixer.Sound(os.path.join("Assets", "laser.mp3"))
 CHARGE_SOUND = pygame.mixer.Sound(os.path.join("Assets", "energycharge.mp3"))
+HIT_SOUND = pygame.mixer.Sound(os.path.join("Assets", "hit.wav"))
 # timer setup
 font = pygame.font.Font(None, 36)
 # draw functions
@@ -152,13 +153,14 @@ while run:
         beam.update()
         screen.blit(beam.image, beam.rect.topleft)
         updated_beams.append(beam)
-    for beam in updated_beams:
-        beam_rects.append(beam.rect(topleft=(beam.rect.x, beam.rect. y)))
-        for beam in beam_rects:
-            if beam.colliderect(alien.get_rect(topleft=(alien_x, alien_y))):
-                alien_x = -50
-                alien_y = 500
-                beams = []
+    alien_rect = alien.get_rect(topleft=(alien_x, alien_y))
+    for beam in beams:
+        if alien_rect.colliderect(beam.rect):
+            alien_x = -50
+            alien_y = 500
+            print("Alien hit!")
+            HIT_SOUND.play()
+            updated_beams.remove(beam)
     beams = updated_beams
     player_rect = player.get_rect(topleft=(player_x, player_y))
     # Check collisions with charge blocks
