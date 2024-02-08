@@ -82,7 +82,10 @@ moon = pygame.image.load(os.path.join("Assets", "moon.png"))
 moon = pygame.transform.scale(moon, (900, 100))
 LASER_SOUND = pygame.mixer.Sound(os.path.join("Assets", "laser.mp3"))
 CHARGE_SOUND = pygame.mixer.Sound(os.path.join("Assets", "energycharge.mp3"))
-HIT_SOUND = pygame.mixer.Sound(os.path.join("Assets", "hit.wav"))
+HIT_SOUND = pygame.mixer.Sound(os.path.join("Assets", "hit.mp3"))
+WALK_SOUND = pygame.mixer.Sound(os.path.join("Assets", "walk.wav"))
+JUMP_SOUND = pygame.mixer.Sound(os.path.join("Assets", "jump.wav"))
+
 # timer setup
 font = pygame.font.Font(None, 36)
 # draw functions
@@ -156,7 +159,7 @@ while run:
     alien_rect = alien.get_rect(topleft=(alien_x, alien_y))
     for beam in beams:
         if alien_rect.colliderect(beam.rect):
-            alien_x = -50
+            alien_x = -100
             alien_y = 500
             print("Alien hit!")
             HIT_SOUND.play()
@@ -194,9 +197,9 @@ while run:
 
     #alien follows the player's x position
     if alien_x > player_x:
-        alien_x -= 3
+        alien_x -= 2
     else:
-        alien_x += 3
+        alien_x += 2
     #button presses(you have to hit them once and you cant press down)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -205,6 +208,8 @@ while run:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w and player_y >= 500:
                 player_velocity_y = jump_velocity
+                if (JUMP_SOUND.get_num_channels() == 0):
+                     JUMP_SOUND.play()
             if event.key == pygame.K_SPACE and energy_level > 0:
                 energy_level -= 20
                 direction = 'right' if playerFacesRight else 'left'
@@ -213,6 +218,8 @@ while run:
     #button presses(you must hold them down)
     pressed_keys = pygame.key.get_pressed()
     if pressed_keys[pygame.K_a]:
+        if (WALK_SOUND.get_num_channels() == 0):
+            WALK_SOUND.play()
         player_x -= speed
         player = pygame.transform.scale(player_left, (100, 100))
     
@@ -220,6 +227,8 @@ while run:
 
     if pressed_keys[pygame.K_d]:
         player_x += speed
+        if (WALK_SOUND.get_num_channels() == 0):
+            WALK_SOUND.play()
         player = pygame.transform.scale(player_right, (100, 100))
         playerFacesRight = True
 
